@@ -72,4 +72,4 @@ GNU GPL v3 — any derivative work must remain open source.
 ## Contributing
 
 See `db/seed_data/` for mock data to run locally without hitting EDGAR 
-rate limits. All pipeline modules are fully typed and independently testable.
+rate limits. All pipeline modules are fully typed and independently testable.# deploying
