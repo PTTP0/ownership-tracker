@@ -32,12 +32,21 @@ def insert_holdings(positions: list[dict]) -> int:
     if not positions:
         return 0
     try:
+        # Deduplicate within the batch before inserting
+        seen = set()
+        unique_positions = []
+        for p in positions:
+            key = (p.get("accession_number"), p.get("cusip"))
+            if key not in seen:
+                seen.add(key)
+                unique_positions.append(p)
+
         result = supabase.table("holdings").upsert(
-            positions,
+            unique_positions,
             on_conflict="accession_number,cusip"
         ).execute()
-        print(f"[db] Inserted {len(positions)} holdings")
-        return len(positions)
+        print(f"[db] Inserted {len(unique_positions)} holdings")
+        return len(unique_positions)
     except Exception as e:
         print(f"[db] Failed to insert holdings: {e}")
         return 0
@@ -48,12 +57,20 @@ def insert_security_mappings(mappings: list[dict]) -> int:
     if not mappings:
         return 0
     try:
+        # Deduplicate within batch
+        seen = set()
+        unique_mappings = []
+        for m in mappings:
+            if m["cusip"] not in seen:
+                seen.add(m["cusip"])
+                unique_mappings.append(m)
+
         result = supabase.table("security_mappings").upsert(
-            mappings,
+            unique_mappings,
             on_conflict="cusip"
         ).execute()
-        print(f"[db] Cached {len(mappings)} security mappings")
-        return len(mappings)
+        print(f"[db] Cached {len(unique_mappings)} security mappings")
+        return len(unique_mappings)
     except Exception as e:
         print(f"[db] Failed to insert mappings: {e}")
         return 0

@@ -1,0 +1,7 @@
+cat > requirements.txt << 'EOF'
+requests
+supabase
+python-dotenv
+numpy
+scipy
+EOF

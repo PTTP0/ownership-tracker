@@ -1,0 +1,32 @@
+name: EDGAR Monitor
+
+on:
+  schedule:
+    # Runs every day at 6am UTC
+    # 13F filings due 45 days after quarter end
+    # This catches them as they come in
+    - cron: '0 6 * * *'
+  workflow_dispatch: # allows manual trigger
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENFIGI_API_KEY: ${{ secrets.OPENFIGI_API_KEY }}
+        run: python -m pipeline.run

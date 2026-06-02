@@ -8,7 +8,10 @@ OPENFIGI_URL = "https://api.openfigi.com/v3/mapping"
 # Get a free key at openfigi.com — increases rate limit from 25 to 250 req/min
 # Add to .env file as OPENFIGI_API_KEY
 # Leave as None to use without key during development
-OPENFIGI_API_KEY = None
+import os
+from dotenv import load_dotenv
+load_dotenv()
+OPENFIGI_API_KEY = os.getenv("OPENFIGI_API_KEY")
 
 HEADERS = {
     "Content-Type": "application/json",
